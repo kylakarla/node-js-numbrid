@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,24 +13,45 @@
         <input type="number" id="guess" placeholder="Sisesta oma pakkumine" required />
         <button type="submit">Saada</button>
     </form>
+    <button id="resetButton" style="display: none;">Alusta uuesti</button>
 
     <script>
         document.getElementById('guessForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const guess = document.getElementById('guess').value;
-            const response = await fetch('/guess', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ guess }),
-            });
 
-            const result = await response.json();
-            document.getElementById('feedback').innerText = result.message;
+            try {
+                const response = await fetch('/guess', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ guess }),
+                });
 
-            if (result.success || result.attempts === 0) {
-                document.getElementById('guessForm').style.display = 'none';
+                if (!response.ok) {
+                    throw new Error('Server vastas veaga.');
+                }
+
+                const result = await response.json();
+                document.getElementById('feedback').innerText = result.message;
+
+                if (result.success || result.attempts === 0) {
+                    document.getElementById('guessForm').style.display = 'none';
+                    document.getElementById('resetButton').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Viga:', error);
+                document.getElementById('feedback').innerText = 'Tehniline probleem, proovi hiljem uuesti.';
             }
+        });
+
+        document.getElementById('resetButton').addEventListener('click', async () => {
+            const response = await fetch('/reset', { method: 'POST' });
+            const result = await response.json();
+
+            document.getElementById('feedback').innerText = result.message;
+            document.getElementById('guessForm').style.display = 'block';
+            document.getElementById('resetButton').style.display = 'none';
         });
     </script>
 </body>

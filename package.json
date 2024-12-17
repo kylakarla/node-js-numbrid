@@ -2,8 +2,12 @@
     "name": "number-guessing-game",
     "version": "1.0.0",
     "description": "Lihtne Node.js veebipõhine numbriarvamismäng.",
-    "main": "numberguess.js",
+    "main": "server.js",
     "scripts": {
-      "start": "node numberguess.js"
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "body-parser": "^1.20.3",
+        "express": "^4.21.2"
     }
 }

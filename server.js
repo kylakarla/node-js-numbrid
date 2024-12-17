@@ -18,23 +18,32 @@ app.get('/', (req, res) => {
 app.post('/guess', (req, res) => {
     const guess = parseInt(req.body.guess);
 
+    if (gameState.attempts === 0) {
+        return res.json({ message: `Oled kaotanud! Õige number oli ${gameState.randomNumber}.`, success: false });
+    }
+
     if (isNaN(guess)) {
         return res.json({ message: "Palun sisesta number!", attempts: gameState.attempts });
     }
 
     if (guess === gameState.randomNumber) {
         return res.json({ message: "Palju õnne! Arvasid numbri ära!", success: true });
-    } else if (guess > gameState.randomNumber) {
-        gameState.attempts--;
-        return res.json({ message: "Liiga kõrge! Proovi väiksemat arvu.", attempts: gameState.attempts });
-    } else {
-        gameState.attempts--;
-        return res.json({ message: "Liiga madal! Proovi suuremat arvu.", attempts: gameState.attempts });
     }
 
-    if (gameState.attempts === 0) {
-        return res.json({ message: `Oled kaotanud! Õige number oli ${gameState.randomNumber}.`, success: false });
+    gameState.attempts--;
+    if (guess > gameState.randomNumber) {
+        return res.json({ message: "Liiga kõrge! Proovi väiksemat arvu.", attempts: gameState.attempts });
+    } else {
+        return res.json({ message: "Liiga madal! Proovi suuremat arvu.", attempts: gameState.attempts });
     }
+});
+
+app.post('/reset', (req, res) => {
+    gameState = {
+        randomNumber: Math.floor(Math.random() * 100) + 1,
+        attempts: 9,
+    };
+    res.json({ message: "Mäng on lähtestatud! Proovi uuesti." });
 });
 
 app.listen(3000, () => {
