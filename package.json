@@ -1,0 +1,9 @@
+{
+    "name": "number-guessing-game",
+    "version": "1.0.0",
+    "description": "Lihtne Node.js veebipõhine numbriarvamismäng.",
+    "main": "numberguess.js",
+    "scripts": {
+      "start": "node numberguess.js"
+    }
+}

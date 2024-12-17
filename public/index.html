@@ -1,0 +1,36 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numbriarvamise mäng</title>
+</head>
+<body>
+    <h1>Tere tulemast numbriarvamismängu!</h1>
+    <p>Arva ära number vahemikus 1 kuni 100.</p>
+    <p id="feedback">Sul on 9 katset alles.</p>
+    <form id="guessForm">
+        <input type="number" id="guess" placeholder="Sisesta oma pakkumine" required />
+        <button type="submit">Saada</button>
+    </form>
+
+    <script>
+        document.getElementById('guessForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const guess = document.getElementById('guess').value;
+            const response = await fetch('/guess', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ guess }),
+            });
+
+            const result = await response.json();
+            document.getElementById('feedback').innerText = result.message;
+
+            if (result.success || result.attempts === 0) {
+                document.getElementById('guessForm').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
